@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Footprint Logger</title>
+  <link rel="stylesheet" href="css/styles.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js" defer></script>
+</head>
+<body>
+
+  <!-- NAVBar -->
+  <header class="nav">
+    <div class="nav-brand">🌿 Footprint Logger
+      
+    </div>
+    <nav class="nav-links" id="nav-links">
+      <button class="nav-tab active" data-tab="log">Log Activity</button>
+      <button class="nav-tab" data-tab="dashboard">Dashboard</button>
+      <button class="nav-tab" data-tab="insights">Insights</button>
+    </nav>
+    <div class="nav-user">
+      
+      <button id="auth-btn" class="btn-outline">Sign In</button>
+    </div>
+  </header>
+
+  <main class="container">
+
+    <!-- AUTH PANEL -->
+    <section class="panel active" id="panel-auth">
+      <div class="auth-card">
+        <h2 id="auth-heading">Welcome back</h2>
+        <p id="auth-sub" class="text-muted">Sign in to track your carbon footprint.</p>
+        <div class="alert hidden" id="auth-error"></div>
+        <div class="field">
+          <label for="auth-email">Email</label>
+          <input type="email" id="auth-email" placeholder="you@example.com" />
+        </div>
+        <div class="field">
+          <label for="auth-password">Password</label>
+          <input type="password" id="auth-password" placeholder="At least 6 characters" />
+        </div>
+        <div class="field hidden" id="name-field">
+          <label for="auth-name">Display Name</label>
+          <input type="text" id="auth-name" placeholder="e.g. Alex" />
+        </div>
+        <button class="btn-primary full-width" id="auth-submit">Sign In</button>
+        <p class="text-center text-muted mt-sm">
+          <span id="auth-toggle-text">No account?</span>
+          <button class="btn-link" id="auth-toggle">Register here</button>
+        </p>
+      </div>
+    </section>
+
+    <!-- LOG PANEL -->
+    <section class="panel hidden" id="panel-log">
+      <!-- Summary metrics -->
+      <div class="metrics-grid" id="log-metrics"></div>
+
+      <!-- Log form -->
+      <div class="card">
+        <h3>Log an Activity</h3>
+        <div class="form-row">
+          <div class="field">
+            <label for="activity-select">Activity</label>
+            <select id="activity-select">
+              <option value="">Choose an activity</option>
+              <optgroup label="Transport">
+                <option value="car_petrol"    data-cat="transport" data-unit="km"     data-factor="0.21" >Car (petrol): per km</option>
+                <option value="car_diesel"    data-cat="transport" data-unit="km"     data-factor="0.17" >Car (diesel): per km</option>
+                <option value="bus"           data-cat="transport" data-unit="km"     data-factor="0.089">Bus: per km</option>
+                <option value="train"         data-cat="transport" data-unit="km"     data-factor="0.041">Train: per km</option>
+                <option value="flight_short"  data-cat="transport" data-unit="km"     data-factor="0.255">Short-haul flight: per km</option>
+                <option value="flight_long"   data-cat="transport" data-unit="km"     data-factor="0.195">Long-haul flight: per km</option>
+              </optgroup>
+              <optgroup label="Food">
+                <option value="beef"          data-cat="food"      data-unit="kg"     data-factor="27"   >Beef: per kg</option>
+                <option value="pork"          data-cat="food"      data-unit="kg"     data-factor="12"   >Pork: per kg</option>
+                <option value="chicken"       data-cat="food"      data-unit="kg"     data-factor="6.9"  >Chicken: per kg</option>
+                <option value="fish"          data-cat="food"      data-unit="kg"     data-factor="6.1"  >Fish: per kg</option>
+                <option value="dairy"         data-cat="food"      data-unit="kg"     data-factor="3.2"  >Dairy: per kg</option>
+                <option value="vegetables"    data-cat="food"      data-unit="kg"     data-factor="0.86" >Vegetables: per kg</option>
+              </optgroup>
+              <optgroup label="Energy">
+                <option value="electricity"   data-cat="energy"    data-unit="kWh"    data-factor="0.82" >Electricity (SA grid): per kWh</option>
+                <option value="gas"           data-cat="energy"    data-unit="m³"     data-factor="2.04" >Natural gas: per m³</option>
+                <option value="lpg"           data-cat="energy"    data-unit="litre"  data-factor="1.51" >LPG: per litre</option>
+                <option value="coal"          data-cat="energy"    data-unit="kg"     data-factor="2.42" >Coal: per kg</option>
+              </optgroup>
+              <optgroup label="Other">
+                <option value="waste_landfill" data-cat="other"    data-unit="kg"     data-factor="0.46" >Landfill waste: per kg</option>
+                <option value="shopping"       data-cat="other"    data-unit="item"   data-factor="5.5"  >New clothing item</option>
+                <option value="streaming"      data-cat="other"    data-unit="hour"   data-factor="0.036">Video streaming: per hour</option>
+              </optgroup>
+            </select>
+          </div>
+          <div class="field">
+            <label for="activity-qty">Quantity</label>
+            <input type="number" id="activity-qty" placeholder="0" min="0.01" step="0.1" />
+          </div>
+        </div>
+        <div class="co2-preview hidden" id="co2-preview"></div>
+        <button class="btn-primary" id="log-btn">Add to Log</button>
+      </div>
+
+      <!-- Filter + log list -->
+      <div class="section-header">
+        <h3>Activity Log</h3>
+        <div class="filter-row" id="filter-row">
+          <button class="filter-btn active" data-cat="all">All</button>
+          <button class="filter-btn" data-cat="transport">Transport</button>
+          <button class="filter-btn" data-cat="food">Food</button>
+          <button class="filter-btn" data-cat="energy">Energy</button>
+          <button class="filter-btn" data-cat="other">Other</button>
+        </div>
+      </div>
+      <div id="log-list"></div>
+    </section>
+
+    <!-- DASHBOARD PANEL -->
+    <section class="panel hidden" id="panel-dashboard">
+      <div class="metrics-grid" id="dash-metrics"></div>
+      <h3 class="section-label">Logging Streak: last 7 days</h3>
+      <div class="streak-row" id="streak-row"></div>
+      <div class="charts-grid">
+        <div class="card">
+          <h4 class="chart-title">Emissions by Category</h4>
+          <div class="chart-wrap"><canvas id="pie-chart"></canvas></div>
+          <div id="pie-legend" class="chart-legend"></div>
+        </div>
+        <div class="card">
+          <h4 class="chart-title">Daily Emissions: kg CO2</h4>
+          <div class="chart-wrap"><canvas id="bar-chart"></canvas></div>
+        </div>
+      </div>
+      <div class="card" id="community-card">
+        <h4 class="chart-title">Community Comparison</h4>
+        <div id="community-compare"></div>
+      </div>
+    </section>
+
+    <!-- INSIGHTS PANEL -->
+    <section class="panel hidden" id="panel-insights">
+      <div class="card">
+        <h3>Weekly Reduction Goals</h3>
+        <div id="goal-bars"></div>
+      </div>
+      <h3 class="section-label">Personalised Tips</h3>
+      <div class="insights-grid" id="insights-grid"></div>
+    </section>
+
+  </main>
+</body>
+</html>
