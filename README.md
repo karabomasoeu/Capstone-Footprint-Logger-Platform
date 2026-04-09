@@ -1,1 +1,1 @@
-# Capstone-Footprint-Logger-Platform
+# Capstone Footprint Logger App
