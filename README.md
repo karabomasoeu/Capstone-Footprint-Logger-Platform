@@ -105,7 +105,7 @@ footprint-logger/
 |----------------|------------------------------------|----------------------------------|
 | `PORT`         | Port the server runs on            | `5000`                           |
 | `MONGO_URI`    | MongoDB connection string          | `mongodb://localhost:27017/fp`   |
-| `JWT_SECRET`   | Secret key for signing JWTs        | `your-very-secret-key`           |
+| `JWT_SECRET`   | Secret key for signing JWTs        | `your-secret-key`           |
 | `NODE_ENV`     | Environment mode                   | `development`                    |
 
 ---
