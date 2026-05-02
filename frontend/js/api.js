@@ -17,7 +17,7 @@ async function apiRegister(email, password, displayName) {
   if (!email || !password)    throw new Error('Email and password are required.');
   if (password.length < 6)    throw new Error('Password must be at least 6 characters.');
   const users = getUsers();
-  if (users[email])           throw new Error('An account with that email already exists.');
+  if (users[email])           throw new Error('An account with the email you have provided already exists.');
 
   const user = {
     id:          uid(),
