@@ -15,7 +15,7 @@ module.exports = async function protect(req, res, next) {
     const user    = await User.findById(decoded.id).select('-passwordHash');
 
     if (!user) {
-      return res.status(401).json({ message: 'User not found. Please log in again.' });
+      return res.status(401).json({ message: 'User not found. Please try again.' });
     }
 
     req.user = user;
